@@ -12,11 +12,21 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
 {
     public class 客戶資料Controller : Controller
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+        private 客戶資料Entities db;
+
+        public 客戶資料Controller()
+        {
+            db = new 客戶資料Entities();
+        }
+        public 客戶資料Controller(客戶資料Entities dbcontext)
+        {
+                db = dbcontext;
+        }
 
         // GET: 客戶資料
         public ActionResult Index()
         {
+            
             return View(db.客戶資料.ToList());
         }
 
