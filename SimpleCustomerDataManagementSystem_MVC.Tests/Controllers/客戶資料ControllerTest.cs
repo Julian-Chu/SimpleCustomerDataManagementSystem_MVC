@@ -5,6 +5,7 @@ using SimpleCustomerDataManagementSystem_MVC.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 
 namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
@@ -38,16 +39,17 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             //mock DbContext
             mockContext = Substitute.For<客戶資料Entities>();
             mockContext.客戶資料.Returns(mockDbSet);
+            mockContext.SaveChanges();
         }
 
         [TestMethod]
-        public void MockDbsetAdd()
+        public void MockDbSetAdd()
         {
             //Assign
             //mock Dbset.Add(...)
             //mockDbset.When((x)=> x.Add(Arg.Any<客戶資料>())).Do(s => mockCustomers.Add(s.Arg<客戶資料>)); //錯誤用法
 
-            //mockDbset.When((x) => x.Add(Arg.Any<客戶資料>())).Do(callinfo => mockCustomers.Add((客戶資料)callinfo[0]));  //正確用法
+            //mockDbSet.When((x) => x.Add(Arg.Any<客戶資料>())).Do(callinfo => dummyCustomers.Add((客戶資料)callinfo[0]));  //正確用法
             //^^^^^^^^^^^^^^^^^^^^^ 將第一個參數轉型
             mockDbSet.Add(Arg.Do<客戶資料>(arg => dummyCustomers.Add(arg)));  //正確用法
 
@@ -57,6 +59,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             //Assert
             Assert.AreEqual(6, dummyCustomers.Count);
         }
+
 
         [TestMethod]
         public void Index_noArgs_Return_AllItems()
@@ -79,7 +82,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         {
             //Assign
             客戶資料Controller controller = new 客戶資料Controller(mockContext);
-            /// only one item contains keyword
+
+            ///Test Case 1: only 1 item contains keyword
             //Act
             var result = controller.Index("USER1");
             //Assert
@@ -88,7 +92,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             var items = viewResult.Model as IEnumerable<客戶資料>;
             Assert.AreEqual(1, items.Count());
 
-            /// no items contain keyword
+            ///Test Case 2: no items contain keyword
             //Act
             result = controller.Index("google");
             //Assert
@@ -97,7 +101,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             items = viewResult.Model as IEnumerable<客戶資料>;
             Assert.AreEqual(0, items.Count());
 
-            // items contain keyword
+            //Test case 3: 5 items contain keyword
             //Act
             result = controller.Index("test");
             //Assert
@@ -106,5 +110,86 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             items = viewResult.Model as IEnumerable<客戶資料>;
             Assert.AreEqual(5, items.Count());
         }
+
+        [TestMethod]
+        public void Detail_idIsNull_Return_BadRequest()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+
+            //Act
+            var result = controller.Details(null);
+
+            //Assert
+            Assert.IsInstanceOfType(result, typeof(HttpStatusCodeResult));
+            var httpStatusCodeResult = result as HttpStatusCodeResult;
+            var expected = HttpStatusCode.BadRequest;
+            Assert.AreEqual((int)expected, httpStatusCodeResult.StatusCode);
+        }
+
+        [TestMethod]
+        public void Detail_idIs1_Return_CorrectItem()
+        {
+            //Assign
+
+            //TODO: 以下(int)id[0] 皆轉型失敗, 原因不明??
+            //mockDbSet.Find(Arg.Any<int>()).Returns(id => dummyCustomers.SingleOrDefault( p => (p.Id == (int)id[0]))); 
+            //mockDbSet.When((x) => x.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == (int)callinfo[0])));
+
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+
+            //Act
+            int inputId = 1;  //替代作法 外部傳入查找ID
+            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId)); 
+            var result = controller.Details(inputId);
+            //Assert
+            Assert.AreEqual(result.GetType(), typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            var items = viewResult.Model as 客戶資料;
+
+            Assert.AreEqual(1, items.Id );
+        }
+
+        [TestMethod]
+        public void Detail_idIs100NotInTestData_Return_HttpNotFound()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //Act
+            int inputId = 100;  
+            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            var result = controller.Details(inputId);
+            //Assert
+            Assert.AreEqual(result.GetType(), typeof(HttpNotFoundResult));
+        }
+
+        [TestMethod]
+        public void Create_PostFormFailed_Return_FilledFiledInForm()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            controller.ModelState.AddModelError("", "");
+            //Act
+            var result = controller.Create(new 客戶資料());
+            //Assert
+            Assert.AreEqual(typeof(ViewResult), result.GetType());
+        }
+
+        [TestMethod]
+        public void Create_PostFormSucceed_RedirectToAction()
+        {
+
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            
+            //Act
+            var result = controller.Create(new 客戶資料() { } );
+            //Assert
+            Assert.AreEqual(typeof(RedirectToRouteResult), result.GetType());
+            var redirectionResult = result as RedirectToRouteResult;
+            
+            Assert.AreEqual("Index", redirectionResult.RouteValues["action"]);
+        }
+
+
     }
 }

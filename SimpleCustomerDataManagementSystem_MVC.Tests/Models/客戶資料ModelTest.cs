@@ -180,11 +180,22 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Models
         public void Email欄位長度不得大於250個字元()
         {
             //Assign
-            客戶資料.Email =  GetStringWithLength(50)+"@"+GetStringWithLength(200);
+            客戶資料.Email = GetStringWithLength(250);
             //Act
             var validationResults = new List<ValidationResult>();
             var actual = Validator.TryValidateObject(客戶資料, new ValidationContext(客戶資料), validationResults, true);
             var errMsg = validationResults[0].ErrorMessage;
+            errMsg = errMsg.ToLower();
+            //Assert    
+            Assert.IsFalse(actual);
+            Assert.IsTrue(errMsg.Contains("email") && errMsg.Contains("not a valid"));
+
+            //Assign
+            客戶資料.Email =  GetStringWithLength(50)+"@"+GetStringWithLength(196)+".com";
+            //Act
+            validationResults = new List<ValidationResult>();
+            actual = Validator.TryValidateObject(客戶資料, new ValidationContext(客戶資料), validationResults, true);
+            errMsg = validationResults[0].ErrorMessage;
             //Assert    
             Assert.IsFalse(actual);
             Assert.IsTrue(errMsg.Contains("欄位長度") && errMsg.Contains("250"));
