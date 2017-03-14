@@ -39,42 +39,42 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             //mock DbContext
             mockContext = Substitute.For<客戶資料Entities>();
             mockContext.客戶資料.Returns(mockDbSet);
-            mockContext.SaveChanges();
         }
 
+        //[TestMethod]
+        //public void MockDbSetAdd()
+        //{
+        //    //Assign
+        //    //mock Dbset.Add(...)
+        //    //mockDbset.When((x)=> x.Add(Arg.Any<客戶資料>())).Do(s => mockCustomers.Add(s.Arg<客戶資料>)); //錯誤用法
+
+        //    //mockDbSet.When((x) => x.Add(Arg.Any<客戶資料>())).Do(callinfo => dummyCustomers.Add((客戶資料)callinfo[0]));  //正確用法
+        //    //^^^^^^^^^^^^^^^^^^^^^ 將第一個參數轉型
+        //    mockDbSet.Add(Arg.Do<客戶資料>(arg => dummyCustomers.Add(arg)));  //正確用法
+
+        //    //Act
+        //    mockContext.客戶資料.Add(new 客戶資料 { Id = 6, 客戶名稱 = "testUser6", 統一編號 = "testNum6", 電話 = "666666" });
+
+        //    //Assert
+        //    Assert.AreEqual(6, dummyCustomers.Count);
+        //}
+
         [TestMethod]
-        public void MockDbSetAdd()
-        {
-            //Assign
-            //mock Dbset.Add(...)
-            //mockDbset.When((x)=> x.Add(Arg.Any<客戶資料>())).Do(s => mockCustomers.Add(s.Arg<客戶資料>)); //錯誤用法
-
-            //mockDbSet.When((x) => x.Add(Arg.Any<客戶資料>())).Do(callinfo => dummyCustomers.Add((客戶資料)callinfo[0]));  //正確用法
-            //^^^^^^^^^^^^^^^^^^^^^ 將第一個參數轉型
-            mockDbSet.Add(Arg.Do<客戶資料>(arg => dummyCustomers.Add(arg)));  //正確用法
-
-            //Act
-            mockContext.客戶資料.Add(new 客戶資料 { Id = 6, 客戶名稱 = "testUser6", 統一編號 = "testNum6", 電話 = "666666" });
-
-            //Assert
-            Assert.AreEqual(6, dummyCustomers.Count);
-        }
-
-
-        [TestMethod]
-        public void Index_noArgs_Return_AllItems()
+        public void Index_noArgs_Return_ItemsNotMarkedAsDeleted()
         {
             //Assign
             客戶資料Controller controller = new 客戶資料Controller(mockContext);
 
             //Act
+            dummyCustomers[0].是否已刪除 = true;
+            dummyCustomers[1].是否已刪除 = true;
             var result = controller.Index();
 
             //Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             ViewResult viewResult = result as ViewResult;
             var items = viewResult.Model as IEnumerable<客戶資料>;
-            Assert.AreEqual(dummyCustomers.Count, items.Count());
+            Assert.AreEqual(dummyCustomers.Count -2 , items.Count());
         }
 
         [TestMethod]
@@ -128,35 +128,35 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         }
 
         [TestMethod]
-        public void Detail_idIs1_Return_CorrectItem()
+        public void Detail_idIs1_Return_ViewResult()
         {
             //Assign
 
             //TODO: 以下(int)id[0] 皆轉型失敗, 原因不明??
-            //mockDbSet.Find(Arg.Any<int>()).Returns(id => dummyCustomers.SingleOrDefault( p => (p.Id == (int)id[0]))); 
+            //mockDbSet.Find(Arg.Any<int>()).Returns(id => dummyCustomers.SingleOrDefault( p => (p.Id == (int)id[0])));
             //mockDbSet.When((x) => x.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == (int)callinfo[0])));
 
             客戶資料Controller controller = new 客戶資料Controller(mockContext);
 
             //Act
             int inputId = 1;  //替代作法 外部傳入查找ID
-            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId)); 
+            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
             var result = controller.Details(inputId);
             //Assert
             Assert.AreEqual(result.GetType(), typeof(ViewResult));
             var viewResult = result as ViewResult;
             var items = viewResult.Model as 客戶資料;
 
-            Assert.AreEqual(1, items.Id );
+            Assert.AreEqual(1, items.Id);
         }
 
         [TestMethod]
-        public void Detail_idIs100NotInTestData_Return_HttpNotFound()
+        public void Detail_idIs100客戶資料不存在_Return_HttpNotFound()
         {
             //Assign
             客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            int inputId = 100;
             //Act
-            int inputId = 100;  
             mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
             var result = controller.Details(inputId);
             //Assert
@@ -164,7 +164,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         }
 
         [TestMethod]
-        public void Create_PostFormFailed_Return_FilledFiledInForm()
+        public void Create_Post_Failed_Return_ViewResult()
         {
             //Assign
             客戶資料Controller controller = new 客戶資料Controller(mockContext);
@@ -176,20 +176,150 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         }
 
         [TestMethod]
-        public void Create_PostFormSucceed_RedirectToAction()
+        public void Create_Post_Succeed_RedirectToAction()
         {
-
+            //Assign
             客戶資料Controller controller = new 客戶資料Controller(mockContext);
-            
             //Act
-            var result = controller.Create(new 客戶資料() { } );
+            var result = controller.Create(new 客戶資料() { });
             //Assert
             Assert.AreEqual(typeof(RedirectToRouteResult), result.GetType());
             var redirectionResult = result as RedirectToRouteResult;
-            
+
             Assert.AreEqual("Index", redirectionResult.RouteValues["action"]);
         }
 
+        [TestMethod]
+        public void Edit_Get_IdIsNull_Return_BadRequest()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
 
+            //Act
+            var result = controller.Edit(null);
+
+            //Assert
+            Assert.AreEqual(typeof(HttpStatusCodeResult), result.GetType());
+            var httpStatusCodeResult = result as HttpStatusCodeResult;
+            var expected = HttpStatusCode.BadRequest;
+            Assert.AreEqual((int)expected, httpStatusCodeResult.StatusCode);
+        }
+
+        [TestMethod]
+        public void Edit_Get_idIs100客戶資料不存在_Return_HttpNotFound()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            int inputId = 100;
+            //Act
+            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            var result = controller.Edit(inputId);
+            //Assert
+            Assert.AreEqual(result.GetType(), typeof(HttpNotFoundResult));
+        }
+
+        [TestMethod]
+        public void Edit_Get_idIs1Succeed_Return_ViewResult()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            int inputId = 1;
+            //Act
+            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            var result = controller.Edit(inputId);
+            //Assert
+            Assert.AreEqual(result.GetType(), typeof(ViewResult));
+        }
+
+        [TestMethod]
+        public void EditPost_Failed_Return_ViewResult()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            controller.ModelState.AddModelError("", "");
+            //Act
+            var result = controller.EditPost(new 客戶資料());
+            //Assert
+            Assert.AreEqual(typeof(ViewResult), result.GetType());
+        }
+
+        [TestMethod]
+        public void Edit_Post_Succeed_RedirectToAction()
+        {
+            //Assign
+            客戶資料StubController controller = new 客戶資料StubController(mockContext);
+            //Act
+            var result = controller.EditPost(new 客戶資料() { });
+            //Assert
+            Assert.AreEqual(typeof(RedirectToRouteResult), result.GetType());
+            var redirectionResult = result as RedirectToRouteResult;
+
+            Assert.AreEqual("Index", redirectionResult.RouteValues["action"]);
+        }
+
+        [TestMethod]
+        public void Delete_idIsNull_Return_BadRequest()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //Act
+            var result = controller.Delete(null);
+            //Assert
+            Assert.AreEqual(typeof(HttpStatusCodeResult), result.GetType());
+            var httpStatusCodeResult = result as HttpStatusCodeResult;
+            var expected = HttpStatusCode.BadRequest;
+            Assert.AreEqual((int)expected, httpStatusCodeResult.StatusCode);
+        }
+
+        [TestMethod]
+        public void Delete_idIs100客戶資料不存在_Return_HttpNotFound()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            int inputId = 100;
+            //Act
+            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            var result = controller.Delete(inputId);
+            //Assert
+            Assert.AreEqual(typeof(HttpNotFoundResult), result.GetType());
+        }
+
+        [TestMethod]
+        public void Delete_idis1Succeed_Return_ViewResult()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            int inputId = 1;
+            //Act
+            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            var result = controller.Delete(inputId);
+            //Assert
+            Assert.AreEqual(typeof(ViewResult), result.GetType());
+        }
+
+        [TestMethod]
+        public void DeleteConfirmed_Succeed_Return_RedirectToAction()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            int inputId = 1;
+            //Act
+            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            var result = controller.DeleteConfirmed(inputId);
+            //Assert
+            Assert.AreEqual(typeof(RedirectToRouteResult), result.GetType());
+            var redirectToRouteResult = result as RedirectToRouteResult;
+            Assert.AreEqual("Index", redirectToRouteResult.RouteValues["action"]);
+        }
+
+        public class 客戶資料StubController : 客戶資料Controller
+        {
+            public 客戶資料StubController(客戶資料Entities dbcontext) : base(dbcontext)
+            {
+            }
+
+            protected override void MarkedAsModified(客戶資料 客戶資料)
+            { }
+        }
     }
 }

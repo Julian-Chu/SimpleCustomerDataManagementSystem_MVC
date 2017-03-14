@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'c:\users\yulan\documents\visual studio 2015\Projects\SimpleCustomerDataManagementSystem_MVC\SimpleCustomerDataManagementSystem_MVC\Models\客戶實體資料模型.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\yulan\documents\visual studio 2015\Projects\SimpleCustomerDataManagementSystem_MVC\SimpleCustomerDataManagementSystem_MVC\Models\客戶實體資料模型.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

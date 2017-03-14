@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using System;
 
 namespace SimpleCustomerDataManagementSystem_MVC.Controllers
 {
@@ -16,13 +17,13 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         }
         public 客戶資料Controller(客戶資料Entities dbcontext)
         {
-                db = dbcontext;
+            db = dbcontext;
         }
 
         // GET: 客戶資料
         public ActionResult Index(string keyword = null)
         {
-            var data = db.客戶資料.AsQueryable();
+            var data = db.客戶資料.Where(客戶 => 客戶.是否已刪除 == false).AsQueryable();
             if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = keyword.ToLower();
@@ -89,17 +90,23 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         // POST: 客戶資料/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost ,ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
+        public ActionResult EditPost([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(客戶資料).State = EntityState.Modified;
+                //db.Entry(客戶資料).State = EntityState.Modified;
+                MarkedAsModified(客戶資料);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(客戶資料);
+        }
+
+        protected virtual void MarkedAsModified(客戶資料 客戶資料)
+        {
+            db.Entry(客戶資料).State = EntityState.Modified;
         }
 
         // GET: 客戶資料/Delete/5
@@ -123,7 +130,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶資料 客戶資料 = db.客戶資料.Find(id);
-            db.客戶資料.Remove(客戶資料);
+            //db.客戶資料.Remove(客戶資料);
+            客戶資料.是否已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
