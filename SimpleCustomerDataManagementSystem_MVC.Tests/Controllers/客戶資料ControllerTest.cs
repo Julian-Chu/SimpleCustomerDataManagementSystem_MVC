@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NSubstitute;
+using SimpleCustomerDataManagementSystem_MVC.Controllers;
 using SimpleCustomerDataManagementSystem_MVC.Models;
 using System.Collections.Generic;
-using NSubstitute;
-using System.Linq;
 using System.Data.Entity;
-using SimpleCustomerDataManagementSystem_MVC.Controllers;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
@@ -15,7 +15,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         private List<客戶資料> dummyCustomers;
         private IDbSet<客戶資料> mockDbSet;
         private 客戶資料Entities mockContext;
-      
+
         [TestInitialize]
         public void InitializMethod()
         {
@@ -48,7 +48,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             //mockDbset.When((x)=> x.Add(Arg.Any<客戶資料>())).Do(s => mockCustomers.Add(s.Arg<客戶資料>)); //錯誤用法
 
             //mockDbset.When((x) => x.Add(Arg.Any<客戶資料>())).Do(callinfo => mockCustomers.Add((客戶資料)callinfo[0]));  //正確用法
-                                                                                              //^^^^^^^^^^^^^^^^^^^^^ 將第一個參數轉型 
+            //^^^^^^^^^^^^^^^^^^^^^ 將第一個參數轉型
             mockDbSet.Add(Arg.Do<客戶資料>(arg => dummyCustomers.Add(arg)));  //正確用法
 
             //Act
@@ -59,19 +59,52 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         }
 
         [TestMethod]
-        public void Index_noArgs_ReturnAllItems()
+        public void Index_noArgs_Return_AllItems()
         {
             //Assign
             客戶資料Controller controller = new 客戶資料Controller(mockContext);
 
-            //Act 
+            //Act
             var result = controller.Index();
 
             //Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             ViewResult viewResult = result as ViewResult;
             var items = viewResult.Model as IEnumerable<客戶資料>;
-            Assert.AreEqual(dummyCustomers.Count, items.Count());            
+            Assert.AreEqual(dummyCustomers.Count, items.Count());
+        }
+
+        [TestMethod]
+        public void Index_KeywordSearch_Return_ItemsWithKeyword()
+        {
+            //Assign
+            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            /// only one item contains keyword
+            //Act
+            var result = controller.Index("USER1");
+            //Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            ViewResult viewResult = result as ViewResult;
+            var items = viewResult.Model as IEnumerable<客戶資料>;
+            Assert.AreEqual(1, items.Count());
+
+            /// no items contain keyword
+            //Act
+            result = controller.Index("google");
+            //Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            viewResult = result as ViewResult;
+            items = viewResult.Model as IEnumerable<客戶資料>;
+            Assert.AreEqual(0, items.Count());
+
+            // items contain keyword
+            //Act
+            result = controller.Index("test");
+            //Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            viewResult = result as ViewResult;
+            items = viewResult.Model as IEnumerable<客戶資料>;
+            Assert.AreEqual(5, items.Count());
         }
     }
 }

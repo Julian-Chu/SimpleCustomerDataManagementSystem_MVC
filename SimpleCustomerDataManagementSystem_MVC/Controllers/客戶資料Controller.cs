@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using SimpleCustomerDataManagementSystem_MVC.Models;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using SimpleCustomerDataManagementSystem_MVC.Models;
 
 namespace SimpleCustomerDataManagementSystem_MVC.Controllers
 {
@@ -24,10 +20,16 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         }
 
         // GET: 客戶資料
-        public ActionResult Index()
+        public ActionResult Index(string keyword = null)
         {
-            
-            return View(db.客戶資料.ToList());
+            var data = db.客戶資料.AsQueryable();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                keyword = keyword.ToLower();
+                data = data.Where(customer => customer.客戶名稱.ToLower().Contains(keyword));
+                return View(data.ToList());
+            }
+            return View(data.ToList());
         }
 
         // GET: 客戶資料/Details/5
@@ -38,7 +40,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             客戶資料 客戶資料 = db.客戶資料.Find(id);
-            
+
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -53,7 +55,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         }
 
         // POST: 客戶資料/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -85,7 +87,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         }
 
         // POST: 客戶資料/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
