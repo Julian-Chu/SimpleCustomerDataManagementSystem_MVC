@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SimpleCustomerDataManagementSystem_MVC.Models;
+using SimpleCustomerDataManagementSystem_MVC.Models.ViewModels;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using SimpleCustomerDataManagementSystem_MVC.Models;
+using System.Web.Security;
 
 namespace SimpleCustomerDataManagementSystem_MVC.Controllers
 {
+    [Authorize]
     public class 客戶資料統計Controller : Controller
     {
         private 客戶資料Entities db = new 客戶資料Entities();
@@ -30,7 +28,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
                 {
                     var 客戶資料統計 = db.客戶資料統計.FirstOrDefault(p => p.Id == customer.Id);
                     客戶資料統計.聯絡人數量 = 聯絡人數量;
-                    客戶資料統計.銀行帳戶數量 = 銀行帳戶數量;                    
+                    客戶資料統計.銀行帳戶數量 = 銀行帳戶數量;
                 }
             }
             db.SaveChanges();
@@ -38,6 +36,31 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
             return View(db.客戶資料統計.ToList());
         }
 
+        [AllowAnonymous]
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult Login(LoginViewModel loginVM)
+        {
+            if (loginVM.Username == "test" && loginVM.Password == "1234")
+            {
+                FormsAuthentication.RedirectFromLoginPage(loginVM.Username, false);
+            }
+            ViewBag.ErrorMessage = "密碼錯誤";
+            return View(loginVM);
+        }
+
+        [AllowAnonymous]
+        public ActionResult Logout()
+        {
+            Session.Abandon();
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login", "客戶資料統計");
+        }
 
         protected override void Dispose(bool disposing)
         {
