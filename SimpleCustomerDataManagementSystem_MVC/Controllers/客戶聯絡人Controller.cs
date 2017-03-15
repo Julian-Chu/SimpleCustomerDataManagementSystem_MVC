@@ -17,8 +17,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         // GET: 客戶聯絡人
         public ActionResult Index()
         {
-            //var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
-            var 客戶聯絡人 = db.客戶聯絡人; //.Include(客 => 客.客戶資料);
+            var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
 
             return View(客戶聯絡人.ToList());
         }
