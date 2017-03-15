@@ -90,7 +90,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            //客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = repo.Find(id);
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -108,17 +109,24 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
             if (ModelState.IsValid)
             {
                 //db.Entry(客戶資料).State = EntityState.Modified;
-                MarkedAsModified(客戶資料);
-                db.SaveChanges();
+                var tempDB = repo.UnitOfWork.Context;
+                MarkedAsModified(tempDB, 客戶資料);
+                //db.SaveChanges();
+                repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
             return View(客戶資料);
         }
 
-        protected virtual void MarkedAsModified(客戶資料 客戶資料)
+        protected virtual void MarkedAsModified(DbContext tempDB, 客戶資料 客戶資料)
         {
-            db.Entry(客戶資料).State = EntityState.Modified;
+            tempDB.Entry(客戶資料).State = EntityState.Modified;
         }
+
+        //protected virtual void MarkedAsModified(客戶資料 客戶資料)
+        //{
+        //    db.Entry(客戶資料).State = EntityState.Modified;
+        //}
 
         // GET: 客戶資料/Delete/5
         public ActionResult Delete(int? id)

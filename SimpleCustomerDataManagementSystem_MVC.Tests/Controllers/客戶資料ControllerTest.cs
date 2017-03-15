@@ -191,7 +191,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Edit_Get_IdIsNull_Return_BadRequest()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
 
             //Act
             var result = controller.Edit(null);
@@ -207,10 +208,14 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Edit_Get_idIs100客戶資料不存在_Return_HttpNotFound()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
+
             int inputId = 100;
             //Act
-            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            //mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            mockRepository.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+
             var result = controller.Edit(inputId);
             //Assert
             Assert.AreEqual(result.GetType(), typeof(HttpNotFoundResult));
@@ -220,10 +225,14 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Edit_Get_idIs1Succeed_Return_ViewResult()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
+
             int inputId = 1;
             //Act
-            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            //mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            mockRepository.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+
             var result = controller.Edit(inputId);
             //Assert
             Assert.AreEqual(result.GetType(), typeof(ViewResult));
@@ -233,7 +242,9 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void EditPost_Failed_Return_ViewResult()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
+
             controller.ModelState.AddModelError("", "");
             //Act
             var result = controller.EditPost(new 客戶資料());
@@ -245,13 +256,14 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Edit_Post_Succeed_RedirectToAction()
         {
             //Assign
-            客戶資料StubController controller = new 客戶資料StubController(mockContext);
+            //客戶資料StubController controller = new 客戶資料StubController(mockContext);
+            客戶資料StubController controller = new 客戶資料StubController(mockRepository);
+
             //Act
             var result = controller.EditPost(new 客戶資料() { });
             //Assert
             Assert.AreEqual(typeof(RedirectToRouteResult), result.GetType());
             var redirectionResult = result as RedirectToRouteResult;
-
             Assert.AreEqual("Index", redirectionResult.RouteValues["action"]);
         }
 
@@ -312,11 +324,16 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
 
         public class 客戶資料StubController : 客戶資料Controller
         {
-            public 客戶資料StubController(客戶資料Entities dbcontext) : base(dbcontext)
+            public 客戶資料StubController(I客戶資料Repository iRepo) : base(iRepo)
             {
             }
 
-            protected override void MarkedAsModified(客戶資料 客戶資料)
+            public 客戶資料StubController(客戶資料Entities dbcontext) : base(dbcontext)
+            { }
+
+            //protected override void MarkedAsModified(客戶資料 客戶資料)
+            //{ }
+            protected override void MarkedAsModified(DbContext tempDB, 客戶資料 客戶資料)
             { }
         }
     }
