@@ -159,6 +159,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\客戶聯絡人Controller.cs" />
     <Compile Include="Controllers\客戶資料Controller.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -194,6 +195,7 @@
     <Compile Include="Models\sysdiagramsRepository.cs">
       <DependentUpon>IRepository.EF6..tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Validations\手機號碼Attribute.cs" />
     <Compile Include="Models\客戶實體資料模型.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -311,6 +313,11 @@
     <Content Include="Views\客戶資料\Edit.cshtml" />
     <Content Include="Views\客戶資料\Index.cshtml" />
     <Content Include="Views\客戶資料\客戶資料.cshtml" />
+    <Content Include="Views\客戶聯絡人\Create.cshtml" />
+    <Content Include="Views\客戶聯絡人\Delete.cshtml" />
+    <Content Include="Views\客戶聯絡人\Details.cshtml" />
+    <Content Include="Views\客戶聯絡人\Edit.cshtml" />
+    <Content Include="Views\客戶聯絡人\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

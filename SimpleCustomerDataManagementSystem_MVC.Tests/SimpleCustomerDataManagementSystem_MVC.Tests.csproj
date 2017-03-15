@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\客戶資料ControllerTest.cs" />
+    <Compile Include="Models\客戶聯絡人ModelTest.cs" />
     <Compile Include="Models\客戶資料ModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
