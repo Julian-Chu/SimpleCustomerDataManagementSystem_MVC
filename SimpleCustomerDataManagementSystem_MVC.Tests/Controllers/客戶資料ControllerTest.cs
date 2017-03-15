@@ -161,7 +161,9 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Create_Post_Failed_Return_ViewResult()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
+
             controller.ModelState.AddModelError("", "");
             //Act
             var result = controller.Create(new 客戶資料());
@@ -173,7 +175,9 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Create_Post_Succeed_RedirectToAction()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
+
             //Act
             var result = controller.Create(new 客戶資料() { });
             //Assert

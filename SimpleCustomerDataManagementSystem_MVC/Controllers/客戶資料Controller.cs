@@ -73,8 +73,10 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.客戶資料.Add(客戶資料);
-                db.SaveChanges();
+                //db.客戶資料.Add(客戶資料);
+                //db.SaveChanges();
+                repo.Add(客戶資料);
+                repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
 
