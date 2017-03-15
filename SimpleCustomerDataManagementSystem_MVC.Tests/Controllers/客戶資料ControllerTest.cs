@@ -14,8 +14,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
     public class 客戶資料ControllerTest
     {
         private List<客戶資料> dummyCustomers;
-        private IDbSet<客戶資料> mockDbSet;
-        private 客戶資料Entities mockContext;
+        //private IDbSet<客戶資料> mockDbSet;
+        //private 客戶資料Entities mockContext;
         private I客戶資料Repository mockRepository;
 
         [TestInitialize]
@@ -30,16 +30,16 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
                 new 客戶資料 { Id = 4, 客戶名稱 = "testUser4", 統一編號 = "testNum4", 電話 ="444444444" }
             };
 
-            //mock DbSet
-            mockDbSet = Substitute.For<DbSet<客戶資料>, IDbSet<客戶資料>>();
-            mockDbSet.Provider.Returns(dummyCustomers.AsQueryable().Provider);
-            mockDbSet.Expression.Returns(dummyCustomers.AsQueryable().Expression);
-            mockDbSet.ElementType.Returns(dummyCustomers.AsQueryable().ElementType);
-            mockDbSet.GetEnumerator().Returns(dummyCustomers.AsQueryable().GetEnumerator());
+            ////mock DbSet
+            //mockDbSet = Substitute.For<DbSet<客戶資料>, IDbSet<客戶資料>>();
+            //mockDbSet.Provider.Returns(dummyCustomers.AsQueryable().Provider);
+            //mockDbSet.Expression.Returns(dummyCustomers.AsQueryable().Expression);
+            //mockDbSet.ElementType.Returns(dummyCustomers.AsQueryable().ElementType);
+            //mockDbSet.GetEnumerator().Returns(dummyCustomers.AsQueryable().GetEnumerator());
 
-            //mock DbContext
-            mockContext = Substitute.For<客戶資料Entities>();
-            mockContext.客戶資料.Returns(mockDbSet);
+            ////mock DbContext
+            //mockContext = Substitute.For<客戶資料Entities>();
+            //mockContext.客戶資料.Returns(mockDbSet);
 
             //mockRepository
             mockRepository = Substitute.For<I客戶資料Repository>();
@@ -341,8 +341,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             {
             }
 
-            public 客戶資料StubController(客戶資料Entities dbcontext) : base(dbcontext)
-            { }
+            //public 客戶資料StubController(客戶資料Entities dbcontext) : base(dbcontext)
+            //{ }
 
             //protected override void MarkedAsModified(客戶資料 客戶資料)
             //{ }

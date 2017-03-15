@@ -9,18 +9,18 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
 {
     public class 客戶資料Controller : Controller
     {
-        private 客戶資料Entities db;
+        //private 客戶資料Entities db;
         private I客戶資料Repository repo;
         public 客戶資料Controller()
         {
-            db = new 客戶資料Entities();
+            //db = new 客戶資料Entities();
             repo = RepositoryHelper.Get客戶資料Repository();
             
         }
-        public 客戶資料Controller(客戶資料Entities dbcontext)
-        {
-            db = dbcontext;
-        }
+        //public 客戶資料Controller(客戶資料Entities dbcontext)
+        //{
+        //    db = dbcontext;
+        //}
 
         public 客戶資料Controller(I客戶資料Repository iRepo)
         {
@@ -164,6 +164,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         {
             if (disposing)
             {
+                var db = repo.UnitOfWork.Context;
                 db.Dispose();
             }
             base.Dispose(disposing);
