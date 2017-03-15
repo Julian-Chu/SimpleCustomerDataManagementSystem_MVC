@@ -3,24 +3,17 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
-using System;
 
 namespace SimpleCustomerDataManagementSystem_MVC.Controllers
 {
     public class 客戶資料Controller : Controller
     {
-        //private 客戶資料Entities db;
         private I客戶資料Repository repo;
+
         public 客戶資料Controller()
         {
-            //db = new 客戶資料Entities();
             repo = RepositoryHelper.Get客戶資料Repository();
-            
         }
-        //public 客戶資料Controller(客戶資料Entities dbcontext)
-        //{
-        //    db = dbcontext;
-        //}
 
         public 客戶資料Controller(I客戶資料Repository iRepo)
         {
@@ -30,7 +23,6 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         // GET: 客戶資料
         public ActionResult Index(string keyword = null)
         {
-            //var data = db.客戶資料.Where(客戶 => 客戶.是否已刪除 == false).AsQueryable();
             var data = repo.All().Where(客戶 => 客戶.是否已刪除 == false).AsQueryable();
             if (!string.IsNullOrEmpty(keyword))
             {
@@ -48,7 +40,6 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //客戶資料 客戶資料 = db.客戶資料.Find(id);
             客戶資料 客戶資料 = repo.Find(id);
 
             if (客戶資料 == null)
@@ -73,8 +64,6 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                //db.客戶資料.Add(客戶資料);
-                //db.SaveChanges();
                 repo.Add(客戶資料);
                 repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
@@ -90,7 +79,6 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //客戶資料 客戶資料 = db.客戶資料.Find(id);
             客戶資料 客戶資料 = repo.Find(id);
             if (客戶資料 == null)
             {
@@ -102,16 +90,14 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         // POST: 客戶資料/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost ,ActionName("Edit")]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public ActionResult EditPost([Bind(Include = "Id,客戶名稱,統一編號,電話,傳真,地址,Email")] 客戶資料 客戶資料)
         {
             if (ModelState.IsValid)
             {
-                //db.Entry(客戶資料).State = EntityState.Modified;
                 var tempDB = repo.UnitOfWork.Context;
                 MarkedAsModified(tempDB, 客戶資料);
-                //db.SaveChanges();
                 repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }
@@ -122,11 +108,6 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         {
             tempDB.Entry(客戶資料).State = EntityState.Modified;
         }
-
-        //protected virtual void MarkedAsModified(客戶資料 客戶資料)
-        //{
-        //    db.Entry(客戶資料).State = EntityState.Modified;
-        //}
 
         // GET: 客戶資料/Delete/5
         public ActionResult Delete(int? id)
@@ -150,12 +131,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            //客戶資料 客戶資料 = db.客戶資料.Find(id);
             客戶資料 客戶資料 = repo.Find(id);
-
-            //db.客戶資料.Remove(客戶資料);
             客戶資料.是否已刪除 = true;
-            //db.SaveChanges();
             repo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
