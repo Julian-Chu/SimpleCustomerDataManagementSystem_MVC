@@ -42,5 +42,17 @@
             </td>*@
         </tr>
     }
-
+       
+    
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+            Go To
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">@Html.ActionLink("客戶資料", "Index", "客戶資料")</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">@Html.ActionLink("客戶聯絡人", "Index", "客戶聯絡人")</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">@Html.ActionLink("客戶銀行資訊", "Index", "客戶銀行資訊")</a></li>
+        </ul>
+    </div>
 </table>
