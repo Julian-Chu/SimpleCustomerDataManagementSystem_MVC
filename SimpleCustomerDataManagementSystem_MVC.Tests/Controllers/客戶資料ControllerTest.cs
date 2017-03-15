@@ -16,6 +16,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         private List<客戶資料> dummyCustomers;
         private IDbSet<客戶資料> mockDbSet;
         private 客戶資料Entities mockContext;
+        private I客戶資料Repository mockRepository;
 
         [TestInitialize]
         public void InitializMethod()
@@ -39,6 +40,11 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             //mock DbContext
             mockContext = Substitute.For<客戶資料Entities>();
             mockContext.客戶資料.Returns(mockDbSet);
+
+            //mockRepository
+            mockRepository = Substitute.For<I客戶資料Repository>();
+            mockRepository.All().Returns(dummyCustomers.AsQueryable());
+
         }
 
         //[TestMethod]
@@ -63,7 +69,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Index_noArgs_Return_ItemsNotMarkedAsDeleted()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
 
             //Act
             dummyCustomers[0].是否已刪除 = true;
@@ -81,7 +88,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Index_KeywordSearch_Return_ItemsWithKeyword()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
 
             ///Test Case 1: only 1 item contains keyword
             //Act

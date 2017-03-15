@@ -10,20 +10,28 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
     public class 客戶資料Controller : Controller
     {
         private 客戶資料Entities db;
-
+        private I客戶資料Repository repo;
         public 客戶資料Controller()
         {
             db = new 客戶資料Entities();
+            repo = RepositoryHelper.Get客戶資料Repository();
+            
         }
         public 客戶資料Controller(客戶資料Entities dbcontext)
         {
             db = dbcontext;
         }
 
+        public 客戶資料Controller(I客戶資料Repository iRepo)
+        {
+            repo = iRepo;
+        }
+
         // GET: 客戶資料
         public ActionResult Index(string keyword = null)
         {
-            var data = db.客戶資料.Where(客戶 => 客戶.是否已刪除 == false).AsQueryable();
+            //var data = db.客戶資料.Where(客戶 => 客戶.是否已刪除 == false).AsQueryable();
+            var data = repo.All().Where(客戶 => 客戶.是否已刪除 == false).AsQueryable();
             if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = keyword.ToLower();
