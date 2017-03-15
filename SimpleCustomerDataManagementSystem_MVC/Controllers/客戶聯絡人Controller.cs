@@ -15,11 +15,14 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: 客戶聯絡人
-        public ActionResult Index()
+        public ActionResult Index(string keyword)
         {
-            var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
 
-            return View(客戶聯絡人.ToList());
+            var data = db.客戶聯絡人.Include(客 => 客.客戶資料).Where(customer => customer.是否已刪除 == false);
+            if (!string.IsNullOrEmpty(keyword))
+               data = data.Where(customer => customer.姓名.Contains(keyword) || customer.客戶資料.客戶名稱.Contains(keyword) );
+
+            return View(data.ToList());
         }
 
         // GET: 客戶聯絡人/Details/5
@@ -116,7 +119,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
-            db.客戶聯絡人.Remove(客戶聯絡人);
+            //db.客戶聯絡人.Remove(客戶聯絡人);
+            客戶聯絡人.是否已刪除 = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

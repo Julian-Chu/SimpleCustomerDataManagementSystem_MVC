@@ -28,7 +28,6 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
             {
                 keyword = keyword.ToLower();
                 data = data.Where(customer => customer.客戶名稱.ToLower().Contains(keyword));
-                return View(data.ToList());
             }
             return View(data.ToList());
         }
