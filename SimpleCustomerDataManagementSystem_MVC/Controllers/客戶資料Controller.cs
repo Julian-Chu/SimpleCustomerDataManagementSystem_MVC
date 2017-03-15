@@ -135,7 +135,9 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            //客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = repo.Find(id);
+
             if (客戶資料 == null)
             {
                 return HttpNotFound();
@@ -148,10 +150,13 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶資料 客戶資料 = db.客戶資料.Find(id);
+            //客戶資料 客戶資料 = db.客戶資料.Find(id);
+            客戶資料 客戶資料 = repo.Find(id);
+
             //db.客戶資料.Remove(客戶資料);
             客戶資料.是否已刪除 = true;
-            db.SaveChanges();
+            //db.SaveChanges();
+            repo.UnitOfWork.Commit();
             return RedirectToAction("Index");
         }
 

@@ -271,7 +271,9 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Delete_idIsNull_Return_BadRequest()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
+
             //Act
             var result = controller.Delete(null);
             //Assert
@@ -285,10 +287,14 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Delete_idIs100客戶資料不存在_Return_HttpNotFound()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
+
             int inputId = 100;
             //Act
-            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            //mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            mockRepository.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+
             var result = controller.Delete(inputId);
             //Assert
             Assert.AreEqual(typeof(HttpNotFoundResult), result.GetType());
@@ -298,10 +304,14 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Delete_idis1Succeed_Return_ViewResult()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
+
             int inputId = 1;
             //Act
-            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            //mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            mockRepository.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+
             var result = controller.Delete(inputId);
             //Assert
             Assert.AreEqual(typeof(ViewResult), result.GetType());
@@ -311,10 +321,13 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void DeleteConfirmed_Succeed_Return_RedirectToAction()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
+
             int inputId = 1;
             //Act
-            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            //mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            mockRepository.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
             var result = controller.DeleteConfirmed(inputId);
             //Assert
             Assert.AreEqual(typeof(RedirectToRouteResult), result.GetType());
