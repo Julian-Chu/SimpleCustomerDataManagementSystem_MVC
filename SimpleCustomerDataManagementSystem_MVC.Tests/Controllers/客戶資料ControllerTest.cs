@@ -44,26 +44,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             //mockRepository
             mockRepository = Substitute.For<I客戶資料Repository>();
             mockRepository.All().Returns(dummyCustomers.AsQueryable());
-
         }
-
-        //[TestMethod]
-        //public void MockDbSetAdd()
-        //{
-        //    //Assign
-        //    //mock Dbset.Add(...)
-        //    //mockDbset.When((x)=> x.Add(Arg.Any<客戶資料>())).Do(s => mockCustomers.Add(s.Arg<客戶資料>)); //錯誤用法
-
-        //    //mockDbSet.When((x) => x.Add(Arg.Any<客戶資料>())).Do(callinfo => dummyCustomers.Add((客戶資料)callinfo[0]));  //正確用法
-        //    //^^^^^^^^^^^^^^^^^^^^^ 將第一個參數轉型
-        //    mockDbSet.Add(Arg.Do<客戶資料>(arg => dummyCustomers.Add(arg)));  //正確用法
-
-        //    //Act
-        //    mockContext.客戶資料.Add(new 客戶資料 { Id = 6, 客戶名稱 = "testUser6", 統一編號 = "testNum6", 電話 = "666666" });
-
-        //    //Assert
-        //    Assert.AreEqual(6, dummyCustomers.Count);
-        //}
 
         [TestMethod]
         public void Index_noArgs_Return_ItemsNotMarkedAsDeleted()
@@ -81,7 +62,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             ViewResult viewResult = result as ViewResult;
             var items = viewResult.Model as IEnumerable<客戶資料>;
-            Assert.AreEqual(dummyCustomers.Count -2 , items.Count());
+            Assert.AreEqual(dummyCustomers.Count - 2, items.Count());
         }
 
         [TestMethod]
@@ -123,7 +104,8 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Detail_idIsNull_Return_BadRequest()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
 
             //Act
             var result = controller.Details(null);
@@ -144,11 +126,13 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
             //mockDbSet.Find(Arg.Any<int>()).Returns(id => dummyCustomers.SingleOrDefault( p => (p.Id == (int)id[0])));
             //mockDbSet.When((x) => x.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == (int)callinfo[0])));
 
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            //客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
 
             //Act
             int inputId = 1;  //替代作法 外部傳入查找ID
-            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            //mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            mockRepository.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
             var result = controller.Details(inputId);
             //Assert
             Assert.AreEqual(result.GetType(), typeof(ViewResult));
@@ -162,10 +146,12 @@ namespace SimpleCustomerDataManagementSystem_MVC.Tests.Controllers
         public void Detail_idIs100客戶資料不存在_Return_HttpNotFound()
         {
             //Assign
-            客戶資料Controller controller = new 客戶資料Controller(mockContext);
+            客戶資料Controller controller = new 客戶資料Controller(mockRepository);
             int inputId = 100;
             //Act
-            mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            //mockDbSet.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+            mockRepository.Find(Arg.Any<int>()).Returns(callinfo => dummyCustomers.SingleOrDefault(p => p.Id == inputId));
+
             var result = controller.Details(inputId);
             //Assert
             Assert.AreEqual(result.GetType(), typeof(HttpNotFoundResult));
