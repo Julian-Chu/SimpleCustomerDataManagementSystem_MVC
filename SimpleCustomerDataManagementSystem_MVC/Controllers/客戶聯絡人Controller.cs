@@ -15,7 +15,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: 客戶聯絡人
-        public ActionResult Index(string keyword)
+        public ActionResult Index(string keyword="")
         {
 
             var data = db.客戶聯絡人.Include(客 => 客.客戶資料).Where(customer => customer.是否已刪除 == false);
