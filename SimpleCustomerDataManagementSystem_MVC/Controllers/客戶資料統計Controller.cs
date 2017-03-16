@@ -23,8 +23,6 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
                 int 聯絡人數量 = db.客戶聯絡人.Where(contact => contact.客戶Id == customer.Id).Count();
                 int 銀行帳戶數量 = db.客戶銀行資訊.Where(bank => bank.客戶Id == customer.Id).Count();
 
-                //if (db.客戶資料統計.Count(p => p.Id == customer.Id) == 0)
-                //    db.客戶資料統計.Add(new 客戶資料統計() { Id = customer.Id, 客戶名稱 = customer.客戶名稱, 聯絡人數量 = 聯絡人數量, 銀行帳戶數量 = 銀行帳戶數量 });
                 if (data.Count(p => p.Id == customer.Id) == 0)
                 {
                     var newItem = new 客戶資料統計[]{

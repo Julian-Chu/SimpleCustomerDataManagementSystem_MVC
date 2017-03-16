@@ -4,20 +4,11 @@
     ViewBag.Title = "客戶資料";
 }
 
-<h2>Index</h2>
+<h2>@ViewBag.Title</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-@*<form>
-   <input type="search" name="keyword" value="" />
-    @Html.TextBox("keyword")
-    <input type="submit" value="搜尋" />
-</form>
-@using PagedList
-@using PagedList.Mvc
-
-@Html.PagedListPager(Model as IPagedList, p => Url.Action("Index",new { pageNo = p }))*@
 
 <table class="table">
     <tr>
