@@ -10,6 +10,7 @@ using SimpleCustomerDataManagementSystem_MVC.Models;
 
 namespace SimpleCustomerDataManagementSystem_MVC.Controllers
 {
+    [Authorize]
     public class 客戶銀行資訊Controller : Controller
     {
         private 客戶資料Entities db = new 客戶資料Entities();

@@ -158,7 +158,6 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\客戶聯絡人Controller.cs" />
     <Compile Include="Controllers\客戶資料Controller.cs" />
     <Compile Include="Controllers\客戶資料統計Controller.cs" />

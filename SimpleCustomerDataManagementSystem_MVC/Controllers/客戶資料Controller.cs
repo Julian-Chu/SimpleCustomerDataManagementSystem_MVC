@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace SimpleCustomerDataManagementSystem_MVC.Controllers
 {
+    [Authorize]
     public class 客戶資料Controller : Controller
     {
         private I客戶資料Repository repo;
@@ -19,7 +20,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         {
             repo = iRepo;
         }
-
+        
         // GET: 客戶資料
         public ActionResult Index(string keyword = null)
         {
