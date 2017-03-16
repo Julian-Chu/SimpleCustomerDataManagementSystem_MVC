@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using SimpleCustomerDataManagementSystem_MVC.Models;
+using PagedList;
 
 namespace SimpleCustomerDataManagementSystem_MVC.Controllers
 {
@@ -16,12 +17,14 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         private 客戶資料Entities db = new 客戶資料Entities();
 
         // GET: 客戶銀行資訊
-        public ActionResult Index(string keyword="")
+        public ActionResult Index(string keyword = "", int pageNo = 1)
         {
-            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(bankInfo=>bankInfo.是否已刪除 == false);
+            var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料).Where(bankInfo => bankInfo.是否已刪除 == false);
             if (!string.IsNullOrEmpty(keyword))
                 客戶銀行資訊 = 客戶銀行資訊.Where(bankInfo => bankInfo.客戶資料.客戶名稱.Contains(keyword) || bankInfo.銀行名稱.Contains(keyword));
-            return View(客戶銀行資訊.ToList());
+            客戶銀行資訊 = 客戶銀行資訊.OrderBy(customer => customer.Id);
+            ViewBag.pageNo = pageNo;
+            return View(客戶銀行資訊.ToPagedList(pageNo, 5));
         }
 
         // GET: 客戶銀行資訊/Details/5

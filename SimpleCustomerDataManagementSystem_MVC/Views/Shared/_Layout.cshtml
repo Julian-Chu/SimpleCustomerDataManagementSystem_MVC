@@ -11,7 +11,13 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
     </div>
     <div class="container body-content">
+
         @RenderBody()
+        <form>  
+            @Html.TextBox("keyword")
+            <input type="submit" value="搜尋" />
+        </form>
+        @Html.PagedListPager(Model as IPagedList, p => Url.Action("Index", new { pageNo = p }))
         <hr />
         <footer>
             <div >@Html.ActionLink("回到客戶資料統計頁面", "Index", "客戶資料統計")</div>
