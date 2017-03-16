@@ -14,6 +14,10 @@
     @Html.TextBox("keyword")
     <input type="submit" value="搜尋" />
 </form>
+@using PagedList
+@using PagedList.Mvc
+
+@Html.PagedListPager(Model as IPagedList, p => Url.Action("Index",new { pageNo = p }))
 
 <table class="table">
     <tr>

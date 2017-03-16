@@ -1,4 +1,5 @@
-﻿using SimpleCustomerDataManagementSystem_MVC.Models;
+﻿using PagedList;
+using SimpleCustomerDataManagementSystem_MVC.Models;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -22,7 +23,7 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
         }
         
         // GET: 客戶資料
-        public ActionResult Index(string keyword = null)
+        public ActionResult Index(string keyword = null, int pageNo= 1 )
         {
             var data = repo.All().Where(客戶 => 客戶.是否已刪除 == false).AsQueryable();
             if (!string.IsNullOrEmpty(keyword))
@@ -30,7 +31,10 @@ namespace SimpleCustomerDataManagementSystem_MVC.Controllers
                 keyword = keyword.ToLower();
                 data = data.Where(customer => customer.客戶名稱.ToLower().Contains(keyword));
             }
-            return View(data.ToList());
+            ViewBag.pageNo = pageNo;
+            //return View(data.ToList());
+            data = data.OrderBy(p => p.Id);
+            return View(data.ToPagedList(pageNo, 5));
         }
 
         // GET: 客戶資料/Details/5
