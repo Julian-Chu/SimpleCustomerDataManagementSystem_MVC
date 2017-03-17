@@ -12,13 +12,17 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
-            <p style="margin:20px; color:#ffffff" >User:@User.Identity.Name</p>
+            <p style="margin:20px; color:#ffffff">User:@User.Identity.Name</p>
         }
     </div>
     <div class="container body-content">
 
         @RenderBody()
-        @if (ViewBag.Title != "Login")
+
+        @{
+            string action = ViewContext.RouteData.Values["action"].ToString();
+        }
+        @if (action == "Index" )
         {
             <form>
                 @Html.TextBox("keyword")
